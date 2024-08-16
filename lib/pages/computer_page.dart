@@ -1,6 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
+class FibonacciParams {
+  final int n;
+  final String message;
+
+  FibonacciParams({
+    required this.n,
+    required this.message,
+  });
+  FibonacciParams copyWith({int? n, String? message}) {
+    return FibonacciParams(
+      n: n ?? this.n,
+      message: message ?? this.message,
+    );
+  }
+}
+
 class ComputerPage extends StatefulWidget {
   const ComputerPage({super.key});
 
@@ -16,18 +32,23 @@ class _ComputerPageState extends State<ComputerPage> {
     setState(() {
       isLoading = true;
     });
-    final result = await compute<int, int>(fibonacci, 45);
+    final result = await compute<FibonacciParams, int>(
+      fibonacci,
+      FibonacciParams(n: 45, message: "Hola"),
+    );
     number = result;
     setState(() {
       isLoading = false;
     });
   }
 
-  static int fibonacci(int n) {
+  static int fibonacci(FibonacciParams params) {
+    final n = params.n;
     if (n < 2) {
       return n;
     }
-    return fibonacci(n - 2) + fibonacci(n - 1);
+    return fibonacci(params.copyWith(n: n - 2)) +
+        fibonacci(params.copyWith(n: n - 1));
   }
 
   @override
